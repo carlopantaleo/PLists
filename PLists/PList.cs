@@ -29,25 +29,25 @@ namespace PLists {
             return GetEnumerator();
         }
 
-        public void Add(KeyValuePair<TKey, TValue> item) {
-            throw new NotImplementedException();
-        }
+        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
-        public void Clear() {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Removes all the properties defined for this <see cref="PList{TKey,TValue}"/>. Inherited properties will
+        /// not be cleared.
+        /// </summary>
+        /// <remarks>
+        /// If a inherited property is removed with <see cref="Remove(TKey)"/>, after calling <see cref="Clear"/>
+        /// the value of that property will be the inherited one.
+        /// </remarks>
+        public void Clear() => _properties.Clear();
 
-        public bool Contains(KeyValuePair<TKey, TValue> item) {
-            throw new NotImplementedException();
-        }
+        public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out _);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
             throw new NotImplementedException();
         }
 
-        public bool Remove(KeyValuePair<TKey, TValue> item) {
-            throw new NotImplementedException();
-        }
+        public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
         public int Count => _properties.Count + Prototype?.Count ?? 0;
         public bool IsReadOnly => false;
@@ -56,12 +56,11 @@ namespace PLists {
             _properties.Add(key, PropertyValue<TValue>.Of(value));
         }
 
-        public bool ContainsKey(TKey key) {
-            throw new NotImplementedException();
-        }
+        public bool ContainsKey(TKey key) => TryGetValue(key, out _);
 
         public bool Remove(TKey key) {
-            throw new NotImplementedException();
+            _properties[key] = new UnsetPropertyValue<TValue>();
+            return true;
         }
 
         public bool TryGetValue(TKey key, out TValue? value) {
