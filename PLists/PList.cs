@@ -65,13 +65,18 @@ namespace PLists {
         }
 
         public bool TryGetValue(TKey key, out TValue? value) {
-            if (_properties.TryGetValue(key, out var propertyValue) && propertyValue is PropertyValue<TValue>) {
-                value = propertyValue.Value;
-                return true;
-            }
-
             value = default;
-            return false;
+
+            if (!_properties.TryGetValue(key, out var propertyValue)) {
+                return Prototype != null && Prototype.TryGetValue(key, out value);
+            }
+            
+            if (propertyValue is UnsetPropertyValue<TValue>) {
+                return false;
+            }
+                
+            value = propertyValue.Value;
+            return true;
         }
 
         public TValue this[TKey key] {
