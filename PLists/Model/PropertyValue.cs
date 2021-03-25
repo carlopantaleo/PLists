@@ -15,5 +15,7 @@ namespace PLists.Model {
                                                              "to unset the value of a property, please use " +
                                                              "IPList<TKey, TValue>.Unset().");
         }
+
+        public static PropertyValue<TValue> Of(TValue value) => new() {_value = value};
     }
 }
