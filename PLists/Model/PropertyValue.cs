@@ -5,7 +5,7 @@ namespace PLists.Model {
     /// A concrete property value wrapper.
     /// </summary>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
-    public struct PropertyValue<TValue> : IPropertyValue<TValue> {
+    internal struct PropertyValue<TValue> : IPropertyValue<TValue> {
         private TValue _value;
 
         public TValue Value {
