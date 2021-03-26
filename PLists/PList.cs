@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PLists.Exceptions;
@@ -76,7 +75,7 @@ namespace PLists {
         public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out _);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
-            throw new NotImplementedException();
+            this.ToList().CopyTo(array, arrayIndex);
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
