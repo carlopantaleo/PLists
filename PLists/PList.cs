@@ -36,7 +36,7 @@ namespace PLists {
         }
 
         /// <summary>
-        /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overiden properties. 
+        /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overriden properties. 
         /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
             foreach (var p in EnumerateOwnProperties()) {
