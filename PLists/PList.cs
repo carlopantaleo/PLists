@@ -12,6 +12,10 @@ namespace PLists {
     /// <typeparam name="TValue">The type of the property value.</typeparam>
     public class PList<TKey, TValue> : IPList<TKey, TValue> {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
+        
+        public ICollection<TKey> Keys => this.Select(pair => pair.Key).ToList();
+        public ICollection<TValue> Values => this.Select(pair => pair.Value).ToList();
+        public IPList<TKey, TValue>? Prototype { get; }
 
         public PList(IPList<TKey, TValue> prototype) {
             Prototype = prototype;
@@ -115,9 +119,5 @@ namespace PLists {
                 : throw new PropertyNotFoundException<TKey>(key))!;
             set => _properties[key] = PropertyValue<TValue>.Of(value);
         }
-
-        public ICollection<TKey> Keys { get; }
-        public ICollection<TValue> Values { get; }
-        public IPList<TKey, TValue>? Prototype { get; }
     }
 }
