@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using PLists.Exceptions;
 using PLists.Model;
 
@@ -11,8 +12,7 @@ namespace PLists {
     /// <typeparam name="TKey">The type of the property key.</typeparam>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
     public class PList<TKey, TValue> : IPList<TKey, TValue> {
-        private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = 
-            new Dictionary<TKey, IPropertyValue<TValue>>();
+        private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
 
         public PList(IPList<TKey, TValue> prototype) {
             Prototype = prototype;
@@ -21,8 +21,40 @@ namespace PLists {
         public PList() {
         }
 
+        /// <summary>
+        /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overiden properties. 
+        /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            throw new NotImplementedException();
+            foreach (var p in (IEnumerable<KeyValuePair<TKey, TValue>>) EnumerateOwnProperties()) {
+                yield return p;
+            }
+            
+            foreach (var p in (IEnumerable<KeyValuePair<TKey, TValue>>) EnumerateInheritedProperties()) {
+                yield return p;
+            }
+        }
+
+        private IEnumerator<KeyValuePair<TKey, TValue>> EnumerateOwnProperties() {
+            var keyValuePairs = _properties
+                .Where(pair => pair.Value is PropertyValue<TValue>)
+                .Select(pair => new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value));
+
+            foreach (var keyValuePair in keyValuePairs) {
+                yield return keyValuePair;
+            }
+        }
+
+        /// <summary>
+        /// Enumerates inherited properties which have not been overriden.
+        /// </summary>
+        private IEnumerator<KeyValuePair<TKey, TValue>> EnumerateInheritedProperties() {
+            if (Prototype == null) {
+                yield break;
+            }
+            
+            foreach (var keyValuePair in Prototype.Where(pair => !_properties.ContainsKey(pair.Key))) {
+                yield return keyValuePair;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
