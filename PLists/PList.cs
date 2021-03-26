@@ -13,8 +13,19 @@ namespace PLists {
     public class PList<TKey, TValue> : IPList<TKey, TValue> {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
         
+        /// <summary>
+        /// All the keys of own and inherited properties.
+        /// </summary>
         public ICollection<TKey> Keys => this.Select(pair => pair.Key).ToList();
+        
+        /// <summary>
+        /// All the values of own and inherited properties.
+        /// </summary>
         public ICollection<TValue> Values => this.Select(pair => pair.Value).ToList();
+        
+        /// <summary>
+        /// The prototype from which this <see cref="PList{TKey,TValue}"/> is inheriting from.
+        /// </summary>
         public IPList<TKey, TValue>? Prototype { get; }
 
         public PList(IPList<TKey, TValue> prototype) {
@@ -78,13 +89,23 @@ namespace PLists {
 
         public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out _);
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) {
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => 
             this.ToList().CopyTo(array, arrayIndex);
-        }
 
         public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
-        public int Count => _properties.Count + Prototype?.Count ?? 0;
+        public bool Remove(TKey key) {
+            _properties[key] = new UnsetPropertyValue<TValue>();
+            return true;
+        }
+
+        /// <summary>
+        /// The count of this <see cref="PList{TKey,TValue}"/> properties, including inherited ones.
+        /// </summary>
+        public int Count =>
+            // Flattening to a list consolidates hierarchy
+            this.ToList().Count + (Prototype?.Count ?? 0);
+
         public bool IsReadOnly => false;
 
         public void Add(TKey key, TValue value) {
@@ -92,11 +113,6 @@ namespace PLists {
         }
 
         public bool ContainsKey(TKey key) => TryGetValue(key, out _);
-
-        public bool Remove(TKey key) {
-            _properties[key] = new UnsetPropertyValue<TValue>();
-            return true;
-        }
 
         public bool TryGetValue(TKey key, out TValue? value) {
             value = default;
