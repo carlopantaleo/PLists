@@ -104,7 +104,7 @@ namespace PLists {
         /// </summary>
         public int Count =>
             // Performing a Select() enumerates this PList and consolidates hierarchy.
-            this.Select(_ => 1).Count() + (Prototype?.Count ?? 0);
+            this.Select(_ => 1).Count();
 
         public bool IsReadOnly => false;
 
