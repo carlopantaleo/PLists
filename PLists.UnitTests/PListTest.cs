@@ -89,6 +89,19 @@ namespace PLists.UnitTests {
         }
 
         [Fact]
+        public void MoreOverrides() {
+            var extPlist1 = new PList<string, string>(_pList);
+            extPlist1.Remove("prop1");
+            var extPlist2 = new PList<string, string>(extPlist1);
+            Assert.False(extPlist2.ContainsKey("prop1"));
+
+            extPlist1["prop6"] = "value6";
+            extPlist2["prop7"] = "value7";
+            Assert.Equal(6, extPlist2.Count);
+            Assert.Equal(5, extPlist1.Count);
+        }
+
+        [Fact]
         public void CopyTo() {
             var copy = new KeyValuePair<string, string>[5];
             _pList.CopyTo(copy, 0);
