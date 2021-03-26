@@ -39,16 +39,16 @@ namespace PLists {
         /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overiden properties. 
         /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-            foreach (var p in (IEnumerable<KeyValuePair<TKey, TValue>>) EnumerateOwnProperties()) {
+            foreach (var p in EnumerateOwnProperties()) {
                 yield return p;
             }
             
-            foreach (var p in (IEnumerable<KeyValuePair<TKey, TValue>>) EnumerateInheritedProperties()) {
+            foreach (var p in EnumerateInheritedProperties()) {
                 yield return p;
             }
         }
 
-        private IEnumerator<KeyValuePair<TKey, TValue>> EnumerateOwnProperties() {
+        private IEnumerable<KeyValuePair<TKey, TValue>> EnumerateOwnProperties() {
             var keyValuePairs = _properties
                 .Where(pair => pair.Value is PropertyValue<TValue>)
                 .Select(pair => new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value));
@@ -61,7 +61,7 @@ namespace PLists {
         /// <summary>
         /// Enumerates inherited properties which have not been overriden.
         /// </summary>
-        private IEnumerator<KeyValuePair<TKey, TValue>> EnumerateInheritedProperties() {
+        private IEnumerable<KeyValuePair<TKey, TValue>> EnumerateInheritedProperties() {
             if (Prototype == null) {
                 yield break;
             }
@@ -103,8 +103,8 @@ namespace PLists {
         /// The count of this <see cref="PList{TKey,TValue}"/> properties, including inherited ones.
         /// </summary>
         public int Count =>
-            // Flattening to a list consolidates hierarchy
-            this.ToList().Count + (Prototype?.Count ?? 0);
+            // Performing a Select() enumerates this PList and consolidates hierarchy.
+            this.Select(_ => 1).Count() + (Prototype?.Count ?? 0);
 
         public bool IsReadOnly => false;
 
