@@ -96,7 +96,14 @@ namespace PLists.UnitTests {
             Assert.False(extPlist2.ContainsKey("prop1"));
 
             extPlist1["prop6"] = "value6";
-            extPlist2["prop7"] = "value7";
+            extPlist1["prop7"] = "value7";
+            extPlist2["prop8"] = "value8";
+            Assert.Equal(7, extPlist2.Count);
+            Assert.Equal(6, extPlist1.Count);
+            
+            extPlist1.Clear();
+            Assert.Equal("value1", extPlist2["prop1"]);
+            Assert.False(extPlist1.ContainsKey("prop6"));
             Assert.Equal(6, extPlist2.Count);
             Assert.Equal(5, extPlist1.Count);
         }
