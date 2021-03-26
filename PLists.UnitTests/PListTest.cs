@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PLists.Exceptions;
 using Xunit;
@@ -27,7 +28,10 @@ namespace PLists.UnitTests {
             Assert.Equal("propx", ex.PropertyKey);
             Assert.True(pList.TryGetValue("prop1", out _));
             Assert.False(pList.TryGetValue("propx", out _));
-
+            Assert.True(pList.ContainsKey("prop1"));
+            Assert.False(pList.ContainsKey("dummy"));
+            Assert.True(pList.Contains(new KeyValuePair<string, string>("prop1", "value1")));
+            Assert.False(pList.Contains(new KeyValuePair<string, string>("prop1", "dummyValue")));
             
             pList.Add(new KeyValuePair<string, string>("propy", "valuey"));
             Assert.Equal("valuey", pList["propy"]);
@@ -44,6 +48,8 @@ namespace PLists.UnitTests {
             pList.Remove(new KeyValuePair<string, string>("propz", "foo"));
             ex = Assert.Throws<PropertyNotFoundException<string>>(() => pList["propz"]);
             Assert.Equal("propz", ex.PropertyKey);
+
+            Assert.Throws<NullReferenceException>(() => pList["nullProp"] = null);
 
             Assert.Equal(5, pList.Count);
             Assert.All(pList.Keys, s => Assert.Contains(s, new [] {"prop1", "prop2", "prop3", "prop4", "prop5"}));
@@ -64,6 +70,7 @@ namespace PLists.UnitTests {
             };
             extPlist.Remove("prop2");
             
+            Assert.False(extPlist.ContainsKey("prop2"));
             Assert.Equal("overriden", extPlist["prop1"]);
             Assert.Equal("value1", extPlist.Prototype?["prop1"]);
             Assert.False(extPlist.TryGetValue("prop2", out _));

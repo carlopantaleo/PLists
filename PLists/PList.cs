@@ -87,7 +87,8 @@ namespace PLists {
         /// </remarks>
         public void Clear() => _properties.Clear();
 
-        public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out _);
+        public bool Contains(KeyValuePair<TKey, TValue> item) => 
+            TryGetValue(item.Key, out var value) && value != null && value.Equals(item.Value);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => 
             this.ToList().CopyTo(array, arrayIndex);

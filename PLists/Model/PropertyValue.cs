@@ -16,6 +16,6 @@ namespace PLists.Model {
                                                              "IPList<TKey, TValue>.Unset().");
         }
 
-        public static PropertyValue<TValue> Of(TValue value) => new() {_value = value};
+        public static PropertyValue<TValue> Of(TValue value) => new() {Value = value};
     }
 }
