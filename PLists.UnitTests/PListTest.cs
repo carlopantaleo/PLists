@@ -55,5 +55,26 @@ namespace PLists.UnitTests {
             var extPlist = new PList<string, string>(_pList);
             CommonPListOperations(extPlist);
         }
+
+        [Fact]
+        public void Overrides() {
+            var extPlist = new PList<string, string>(_pList) {
+                ["prop1"] = "overriden", 
+                ["propx"] = "valuex"
+            };
+            extPlist.Remove("prop2");
+            
+            Assert.Equal("overriden", extPlist["prop1"]);
+            Assert.Equal("value1", extPlist.Prototype?["prop1"]);
+            Assert.False(extPlist.TryGetValue("prop2", out _));
+            Assert.True(extPlist.Prototype?.TryGetValue("prop2", out _));
+            Assert.Equal("value2", extPlist.Prototype?["prop2"]);
+            Assert.Equal("valuex", extPlist["propx"]);
+            Assert.False(extPlist.Prototype?.TryGetValue("propx", out _));
+            
+            Assert.Equal(5, extPlist.Count);
+            Assert.All(extPlist.Keys, s => Assert.Contains(s, new [] {"prop1", "prop3", "prop4", "prop5", "propx"}));
+            Assert.All(extPlist.Values, s => Assert.Contains(s, new[] {"overriden", "value3", "value4", "value5", "valuex"}));
+        }
     }
 }
