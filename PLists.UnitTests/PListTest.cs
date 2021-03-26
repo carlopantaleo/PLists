@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PLists.Exceptions;
 using Xunit;
 
@@ -68,7 +69,10 @@ namespace PLists.UnitTests {
                 ["prop1"] = "overriden", 
                 ["propx"] = "valuex"
             };
+            Assert.Equal(6, extPlist.Count);
+            
             extPlist.Remove("prop2");
+            Assert.Equal(5, extPlist.Count);
             
             Assert.False(extPlist.ContainsKey("prop2"));
             Assert.Equal("overriden", extPlist["prop1"]);
@@ -82,6 +86,16 @@ namespace PLists.UnitTests {
             Assert.Equal(5, extPlist.Count);
             Assert.All(extPlist.Keys, s => Assert.Contains(s, new [] {"prop1", "prop3", "prop4", "prop5", "propx"}));
             Assert.All(extPlist.Values, s => Assert.Contains(s, new[] {"overriden", "value3", "value4", "value5", "valuex"}));
+        }
+
+        [Fact]
+        public void CopyTo() {
+            var copy = new KeyValuePair<string, string>[5];
+            _pList.CopyTo(copy, 0);
+            Assert.All(copy.Select(c => c.Key), s => 
+                Assert.Contains(s, new [] {"prop1", "prop2", "prop3", "prop4", "prop5"}));
+            Assert.All(copy.Select(c => c.Value), s => 
+                Assert.Contains(s, new[] {"value1", "value2", "value3", "value4", "value5"}));
         }
     }
 }

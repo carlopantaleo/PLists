@@ -91,7 +91,7 @@ namespace PLists {
             TryGetValue(item.Key, out var value) && value != null && value.Equals(item.Value);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => 
-            this.ToList().CopyTo(array, arrayIndex);
+            this.Select(pair => pair).ToList().CopyTo(array, arrayIndex);
 
         public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
