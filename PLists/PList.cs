@@ -82,7 +82,7 @@ namespace PLists {
             get => (TryGetValue(key, out var value) 
                 ? value
                 : throw new PropertyNotFoundException<TKey>(key))!;
-            set => Add(key, value);
+            set => _properties[key] = PropertyValue<TValue>.Of(value);
         }
 
         public ICollection<TKey> Keys { get; }
