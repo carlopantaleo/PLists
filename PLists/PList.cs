@@ -10,7 +10,7 @@ namespace PLists {
     /// </summary>
     /// <typeparam name="TKey">The type of the property key.</typeparam>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
-    public class PList<TKey, TValue> : IPList<TKey, TValue> {
+    public class PList<TKey, TValue> : IPList<TKey, TValue?> {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
         
         /// <summary>
@@ -21,14 +21,18 @@ namespace PLists {
         /// <summary>
         /// All the values of own and inherited properties.
         /// </summary>
-        public ICollection<TValue> Values => this.Select(pair => pair.Value).ToList();
+        public ICollection<TValue?> Values => this.Select(pair => pair.Value).ToList();
         
         /// <summary>
         /// The prototype from which this <see cref="PList{TKey,TValue}"/> is inheriting from.
         /// </summary>
-        public IPList<TKey, TValue>? Prototype { get; }
+        public IPList<TKey, TValue?>? Prototype { get; }
 
-        public PList(IPList<TKey, TValue> prototype) {
+        /// <summary>
+        /// Creates a new <see cref="PList{TKey,TValue}"/> based on the given prototype.
+        /// </summary>
+        /// <param name="prototype">The prototype of the <see cref="PList{TKey,TValue}"/> to create.</param>
+        public PList(IPList<TKey, TValue?> prototype) {
             Prototype = prototype;
         }
 
@@ -38,7 +42,7 @@ namespace PLists {
         /// <summary>
         /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overriden properties. 
         /// </summary>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
+        public IEnumerator<KeyValuePair<TKey, TValue?>> GetEnumerator() {
             foreach (var p in EnumerateOwnProperties()) {
                 yield return p;
             }
@@ -48,10 +52,10 @@ namespace PLists {
             }
         }
 
-        private IEnumerable<KeyValuePair<TKey, TValue>> EnumerateOwnProperties() {
+        private IEnumerable<KeyValuePair<TKey, TValue?>> EnumerateOwnProperties() {
             var keyValuePairs = _properties
                 .Where(pair => pair.Value is PropertyValue<TValue>)
-                .Select(pair => new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value));
+                .Select(pair => new KeyValuePair<TKey, TValue?>(pair.Key, pair.Value.Value));
 
             foreach (var keyValuePair in keyValuePairs) {
                 yield return keyValuePair;
@@ -61,7 +65,7 @@ namespace PLists {
         /// <summary>
         /// Enumerates inherited properties which have not been overriden.
         /// </summary>
-        private IEnumerable<KeyValuePair<TKey, TValue>> EnumerateInheritedProperties() {
+        private IEnumerable<KeyValuePair<TKey, TValue?>> EnumerateInheritedProperties() {
             if (Prototype == null) {
                 yield break;
             }
@@ -75,7 +79,7 @@ namespace PLists {
             return GetEnumerator();
         }
 
-        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+        public void Add(KeyValuePair<TKey, TValue?> item) => Add(item.Key, item.Value);
 
         /// <summary>
         /// Removes all the properties defined for this <see cref="PList{TKey,TValue}"/>. Inherited properties will
@@ -87,13 +91,13 @@ namespace PLists {
         /// </remarks>
         public void Clear() => _properties.Clear();
 
-        public bool Contains(KeyValuePair<TKey, TValue> item) => 
+        public bool Contains(KeyValuePair<TKey, TValue?> item) => 
             TryGetValue(item.Key, out var value) && value != null && value.Equals(item.Value);
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => 
+        public void CopyTo(KeyValuePair<TKey, TValue?>[] array, int arrayIndex) => 
             this.Select(pair => pair).ToList().CopyTo(array, arrayIndex);
 
-        public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
+        public bool Remove(KeyValuePair<TKey, TValue?> item) => Remove(item.Key);
 
         public bool Remove(TKey key) {
             _properties[key] = new UnsetPropertyValue<TValue>();
@@ -109,7 +113,7 @@ namespace PLists {
 
         public bool IsReadOnly => false;
 
-        public void Add(TKey key, TValue value) {
+        public void Add(TKey key, TValue? value) {
             _properties.Add(key, PropertyValue<TValue>.Of(value));
         }
 
@@ -130,7 +134,7 @@ namespace PLists {
             return true;
         }
 
-        public TValue this[TKey key] {
+        public TValue? this[TKey key] {
             get => (TryGetValue(key, out var value) 
                 ? value
                 : throw new PropertyNotFoundException<TKey>(key))!;
