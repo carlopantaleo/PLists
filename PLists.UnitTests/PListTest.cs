@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using PLists.Exceptions;
@@ -50,11 +49,12 @@ namespace PLists.UnitTests {
             ex = Assert.Throws<PropertyNotFoundException<string>>(() => pList["propz"]);
             Assert.Equal("propz", ex.PropertyKey);
 
-            Assert.Throws<NullReferenceException>(() => pList["nullProp"] = null);
+            pList["nullProp"] = null;
+            Assert.Null(pList["nullProp"]);
 
-            Assert.Equal(5, pList.Count);
-            Assert.All(pList.Keys, s => Assert.Contains(s, new [] {"prop1", "prop2", "prop3", "prop4", "prop5"}));
-            Assert.All(pList.Values, s => Assert.Contains(s, new[] {"value1", "value2", "value3", "value4", "value5"}));
+            Assert.Equal(6, pList.Count);
+            Assert.All(pList.Keys, s => Assert.Contains(s, new [] {"prop1", "prop2", "prop3", "prop4", "prop5", "nullProp"}));
+            Assert.All(pList.Values, s => Assert.Contains(s, new[] {"value1", "value2", "value3", "value4", "value5", null}));
         }
 
         [Fact]
@@ -67,7 +67,8 @@ namespace PLists.UnitTests {
         public void Overrides() {
             var extPlist = new PList<string, string>(_pList) {
                 ["prop1"] = "overriden", 
-                ["propx"] = "valuex"
+                ["propx"] = "valuex",
+                ["prop5"] = null
             };
             Assert.Equal(6, extPlist.Count);
             
@@ -82,10 +83,12 @@ namespace PLists.UnitTests {
             Assert.Equal("value2", extPlist.Prototype?["prop2"]);
             Assert.Equal("valuex", extPlist["propx"]);
             Assert.False(extPlist.Prototype?.TryGetValue("propx", out _));
+            Assert.Null(extPlist["prop5"]);
+            Assert.NotNull(extPlist.Prototype?["prop5"]);
             
             Assert.Equal(5, extPlist.Count);
             Assert.All(extPlist.Keys, s => Assert.Contains(s, new [] {"prop1", "prop3", "prop4", "prop5", "propx"}));
-            Assert.All(extPlist.Values, s => Assert.Contains(s, new[] {"overriden", "value3", "value4", "value5", "valuex"}));
+            Assert.All(extPlist.Values, s => Assert.Contains(s, new[] {"overriden", "value3", "value4", null, "valuex"}));
         }
 
         [Fact]

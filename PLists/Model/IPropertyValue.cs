@@ -4,6 +4,6 @@
     /// </summary>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
     internal interface IPropertyValue<TValue> {
-        TValue Value { get; set; }
+        TValue? Value { get; set; }
     }
 }
