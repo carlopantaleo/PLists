@@ -120,5 +120,17 @@ namespace PLists.UnitTests {
             Assert.All(copy.Select(c => c.Value), s => 
                 Assert.Contains(s, new[] {"value1", "value2", "value3", "value4", "value5"}));
         }
+
+        [Fact]
+        public void FromDictionary() {
+            var dict = new Dictionary<string, string> {
+                ["prop1"] = "value1",
+                ["prop2"] = "value2",
+                ["prop3"] = null
+            };
+            var plist = new PList<string, string>(dict);
+            
+            Assert.Equal(dict, plist);
+        }
     }
 }

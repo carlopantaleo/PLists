@@ -36,6 +36,17 @@ namespace PLists {
             Prototype = prototype;
         }
 
+        /// <summary>
+        /// Creates a new <see cref="PList{TKey,TValue}"/> by cloning the given <see cref="IDictionary{TKey,TValue}"/>.
+        /// </summary>
+        /// <param name="dictionary">The <see cref="IDictionary{TKey,TValue}"/> to clone.</param>
+        /// <remarks>This <see cref="PList{TKey,TValue}"/> will not have a <see cref="Prototype"/>.</remarks>
+        public PList(IDictionary<TKey, TValue?> dictionary) {
+            foreach (var (key, value) in dictionary) {
+                _properties.Add(key, PropertyValue<TValue?>.Of(value));
+            }
+        }
+
         public PList() {
         }
 
