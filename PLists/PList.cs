@@ -12,17 +12,17 @@ namespace PLists {
     /// <typeparam name="TValue">The type of the property value.</typeparam>
     public class PList<TKey, TValue> : IPList<TKey, TValue?> {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
-        
+
         /// <summary>
         /// All the keys of own and inherited properties.
         /// </summary>
         public ICollection<TKey> Keys => this.Select(pair => pair.Key).ToList();
-        
+
         /// <summary>
         /// All the values of own and inherited properties.
         /// </summary>
         public ICollection<TValue?> Values => this.Select(pair => pair.Value).ToList();
-        
+
         /// <summary>
         /// The prototype from which this <see cref="PList{TKey,TValue}"/> is inheriting from.
         /// </summary>
@@ -54,35 +54,42 @@ namespace PLists {
         /// Enumerates this <see cref="PList{TKey,TValue}"/>'s own and inherited but not overriden properties. 
         /// </summary>
         public IEnumerator<KeyValuePair<TKey, TValue?>> GetEnumerator() {
-            foreach (var p in EnumerateOwnProperties()) {
+            foreach (var p in OwnProperties) {
                 yield return p;
             }
-            
-            foreach (var p in EnumerateInheritedProperties()) {
+
+            foreach (var p in InheritedProperties) {
                 yield return p;
-            }
-        }
-
-        private IEnumerable<KeyValuePair<TKey, TValue?>> EnumerateOwnProperties() {
-            var keyValuePairs = _properties
-                .Where(pair => pair.Value is PropertyValue<TValue>)
-                .Select(pair => new KeyValuePair<TKey, TValue?>(pair.Key, pair.Value.Value));
-
-            foreach (var keyValuePair in keyValuePairs) {
-                yield return keyValuePair;
             }
         }
 
         /// <summary>
-        /// Enumerates inherited properties which have not been overriden.
+        /// Computed property that enumerates own properties which are not <see cref="UnsetPropertyValue{TValue}"/>s.
         /// </summary>
-        private IEnumerable<KeyValuePair<TKey, TValue?>> EnumerateInheritedProperties() {
-            if (Prototype == null) {
-                yield break;
+        private IEnumerable<KeyValuePair<TKey, TValue?>> OwnProperties {
+            get {
+                var keyValuePairs = _properties
+                    .Where(pair => pair.Value is PropertyValue<TValue>)
+                    .Select(pair => new KeyValuePair<TKey, TValue?>(pair.Key, pair.Value.Value));
+
+                foreach (var keyValuePair in keyValuePairs) {
+                    yield return keyValuePair;
+                }
             }
-            
-            foreach (var keyValuePair in Prototype.Where(pair => !_properties.ContainsKey(pair.Key))) {
-                yield return keyValuePair;
+        }
+
+        /// <summary>
+        /// Computed property that enumerates inherited properties which have not been overriden.
+        /// </summary>
+        private IEnumerable<KeyValuePair<TKey, TValue?>> InheritedProperties {
+            get {
+                if (Prototype == null) {
+                    yield break;
+                }
+
+                foreach (var keyValuePair in Prototype.Where(pair => !_properties.ContainsKey(pair.Key))) {
+                    yield return keyValuePair;
+                }
             }
         }
 
