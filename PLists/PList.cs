@@ -10,7 +10,7 @@ namespace PLists {
     /// </summary>
     /// <typeparam name="TKey">The type of the property key.</typeparam>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
-    public class PList<TKey, TValue> : IPList<TKey, TValue?> {
+    public sealed class PList<TKey, TValue> : IPList<TKey, TValue?> {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
 
         /// <summary>
