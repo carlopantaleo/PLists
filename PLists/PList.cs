@@ -10,7 +10,7 @@ namespace PLists {
     /// </summary>
     /// <typeparam name="TKey">The type of the property key.</typeparam>
     /// <typeparam name="TValue">The type of the property value.</typeparam>
-    public sealed class PList<TKey, TValue> : IPList<TKey, TValue?> {
+    public sealed class PList<TKey, TValue> : IPList<TKey, TValue?> where TKey : notnull {
         private readonly Dictionary<TKey, IPropertyValue<TValue>> _properties = new();
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace PLists {
         /// <param name="dictionary">The <see cref="IDictionary{TKey,TValue}"/> to clone.</param>
         /// <remarks>This <see cref="PList{TKey,TValue}"/> will not have a <see cref="Prototype"/>.</remarks>
         public PList(IDictionary<TKey, TValue?> dictionary) {
-            foreach (var (key, value) in dictionary) {
-                _properties.Add(key, PropertyValue<TValue?>.Of(value));
+            foreach (var pair in dictionary) {
+                _properties.Add(pair.Key, PropertyValue<TValue?>.Of(pair.Value));
             }
         }
 
