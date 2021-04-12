@@ -4,6 +4,14 @@
     <Nullable>enable</Nullable>
     <LangVersion>9</LangVersion>
     <TargetFrameworks>net40;net45;net451;net452;net46;net461;net472;net5.0;net5.0-windows;netcoreapp3.1;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard1.7;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Authors>Carlo Pantaleo</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A prototype-based extensible property list.</Description>
+    <Copyright>2021 - Carlo Pantaleo</Copyright>
+    <PackageProjectUrl>https://github.com/carlopantaleo/PLists</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/carlopantaleo/PLists</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>prototype-based extensible inheritable property list</PackageTags>
   </PropertyGroup>
 
 </Project>
