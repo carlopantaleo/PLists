@@ -20,6 +20,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ matrix.dotnet }}
+    - name: Pre-clean
+      run: dotnet clean PLists && dotnet nuget locals all --clear
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
