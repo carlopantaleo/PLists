@@ -1,4 +1,6 @@
 # PLists
+![Nuget](https://img.shields.io/nuget/v/PLists)
+
 A prototype-based extensible property list.
 
 
