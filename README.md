@@ -1,5 +1,6 @@
 # PLists
 ![Nuget](https://img.shields.io/nuget/v/PLists)
+![.NET](https://github.com/carlopantaleo/PLists/workflows/.NET/badge.svg)
 
 A prototype-based extensible property list.
 
