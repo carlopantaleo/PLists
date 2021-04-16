@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <PathMap>$(MSBuildProjectDirectory)=PLists\</PathMap>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageVersion>1.0.1</PackageVersion>
+    <Title>PLists</Title>
   </PropertyGroup>
 
   <PropertyGroup>
